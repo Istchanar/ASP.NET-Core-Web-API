@@ -8,12 +8,5 @@ namespace MetricsManager
 
         public int TemperatureC { get; set; }
 
-        /*
-        public void CopyData(TemperatureData temperaturedata)
-        {
-            Date = temperaturedata.Date;
-            TemperatureC = temperaturedata.TemperatureC;
-        }
-        */
     }
 }
