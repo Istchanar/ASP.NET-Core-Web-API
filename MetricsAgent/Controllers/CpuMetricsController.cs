@@ -11,10 +11,12 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class CpuMetricsController : ControllerBase
     {
+
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromHost([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             return Ok();
         }
     }
+
 }
