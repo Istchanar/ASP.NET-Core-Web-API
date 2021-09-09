@@ -7,7 +7,7 @@ namespace MetricsManager.Models
 {
     public class AgentsFolder
     {
-
+ 
         private List<AgentInfo> _folder = new List<AgentInfo>();
 
         public void AddAgent(AgentInfo agent)
