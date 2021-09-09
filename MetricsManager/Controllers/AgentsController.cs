@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MetricsManager.Models;
 
 namespace MetricsManager.Controllers
 {
@@ -11,10 +12,24 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class AgentsController : ControllerBase
     {
+        private AgentsFolder _agentsFolder;
+
+        public AgentsController(AgentsFolder agentsFolder)
+        {
+            _agentsFolder = agentsFolder;
+        }
+
         [HttpPost("register")]
         public IActionResult RegisterAgent([FromBody] AgentInfo agentInfo)
         {
+            _agentsFolder.AddAgent(agentInfo);
             return Ok();
+        }
+
+        [HttpGet("register/list")]
+        public IActionResult GetAgentsList()
+        {
+            return Ok(_agentsFolder.GetAgents());
         }
 
         [HttpPut("enable/{agentId}")]
