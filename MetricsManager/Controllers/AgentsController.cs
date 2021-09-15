@@ -15,8 +15,6 @@ namespace MetricsManager.Controllers
     {
         private AgentsFolder _agentsFolder;
 
-        private readonly ILogger<CpuMetricsController> _logger;
-        public AgentsController(AgentsFolder agentsFolder, ILogger<CpuMetricsController> logger)
         {
             _agentsFolder = agentsFolder;
             _logger = logger;
