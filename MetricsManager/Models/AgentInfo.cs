@@ -10,10 +10,5 @@ namespace MetricsManager.Models
         public int AgentId { get; set; }
 
         public Uri AgentAddress { get; set; }
-
-        public AgentInfo()
-        {
-
-        }
     }
 }

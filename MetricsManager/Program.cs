@@ -15,34 +15,34 @@ namespace MetricsManager
         public static void Main(string[] args)
         {
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+
             try
             {
-                logger.Debug("init main");
+                logger.Debug("Init Main().");
                 CreateHostBuilder(args).Build().Run();
             }
-            //Отлов всех исключений при работе приложения;
             catch (Exception exception)
             {
-                //NLog: устанавливаем отлов исключений;
-                logger.Error(exception, "Stopped program");
+                logger.Error(exception, "App stoped.");
                 throw;
             }
             finally
             {
-                //Остановка логера 
                 NLog.LogManager.Shutdown();
             }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
+            Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
             })
             .ConfigureLogging(logging =>
             {
-                logging.ClearProviders(); //Создание провайдеров логирования
-                logging.SetMinimumLevel(LogLevel.Trace); //Устанавливаем минимальный уровень логирования
-            }).UseNLog(); //Добавляем библиотеку nlog
+                logging.ClearProviders();
+                logging.SetMinimumLevel(LogLevel.Trace);
+            })
+            .UseNLog();
     }
 }
