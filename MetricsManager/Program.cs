@@ -23,7 +23,7 @@ namespace MetricsManager
             }
             catch (Exception exception)
             {
-                logger.Error(exception, "App stoped.");
+                logger.Error(exception, "MetricsManagerApp stoped.");
                 throw;
             }
             finally

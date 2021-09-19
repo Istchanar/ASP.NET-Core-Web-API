@@ -10,11 +10,11 @@ namespace MetricsAgent.DAL
     // маркировочный интерфейс
     // необходим, чтобы проверить работу репозитория на тесте-заглушке
 
-    public class CpuMetricsRepository : SQLiteMetricsRepository
+    public class RamMetricsRepository : SQLiteMetricsRepository
     {
-        public CpuMetricsRepository() 
+        public RamMetricsRepository() 
         {
-            _tableName = "cpumetrics";
+            _tableName = "rammetrics";
         }
     }
 }

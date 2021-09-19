@@ -1,6 +1,8 @@
 using MetricsManager.Controllers;
 using MetricsManager.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System;
 using Xunit;
 
@@ -8,21 +10,25 @@ namespace ControllersTests.MetricsManagerTests
 {
     public class AgentsControllerUnitTests
     {
-        private AgentsController controller;
+        private AgentsController _controller;
 
+        private Mock<ILogger<AgentsController>> _mockLogger;
         public AgentsControllerUnitTests()
         {
             var folder = new AgentsFolder();
 
-            controller = new AgentsController(folder);
+            _mockLogger = new Mock<ILogger<AgentsController>>();
+
+            _controller = new AgentsController(folder, _mockLogger.Object);
         }
+
 
         [Fact]
         public void RegisterAgent_ReturnsOk()
         {
             var agentInfo = new AgentInfo();
 
-            var result = controller.RegisterAgent(agentInfo);
+            var result = _controller.RegisterAgent(agentInfo);
 
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
@@ -30,7 +36,7 @@ namespace ControllersTests.MetricsManagerTests
         [Fact]
         public void GetAgentsList_ReturnsOk()
         {
-            var result = controller.GetAgentsList();
+            var result = _controller.GetAgentsList();
 
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
@@ -40,7 +46,7 @@ namespace ControllersTests.MetricsManagerTests
         {
             var agentId = 1;
 
-            var result = controller.EnableAgentById(agentId);
+            var result = _controller.EnableAgentById(agentId);
 
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
@@ -50,7 +56,7 @@ namespace ControllersTests.MetricsManagerTests
         {
             var agentId = 1;
 
-            var result = controller.DisableAgentById(agentId);
+            var result = _controller.DisableAgentById(agentId);
 
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }

@@ -8,11 +8,11 @@ namespace ModelsTests.MetricsManagerTests
 {
     public class AgentsFolderUnitTests
     {
-        private AgentsFolder folder;
+        private AgentsFolder _folder;
 
         public AgentsFolderUnitTests()
         {
-            folder = new AgentsFolder();
+            _folder = new AgentsFolder();
         }
 
         [Fact]
@@ -21,10 +21,10 @@ namespace ModelsTests.MetricsManagerTests
             for (int i = 0; i < 10; i++)
             {
                 var agent = new AgentInfo();
-                folder.AddAgent(agent);
+                _folder.AddAgent(agent);
             }
 
-            var agents = folder.GetAgents();
+            var agents = _folder.GetAgents();
 
             _ = Assert.IsAssignableFrom<List<AgentInfo>>(agents);
         }
@@ -36,10 +36,10 @@ namespace ModelsTests.MetricsManagerTests
             for (int i = 0; i < count; i++)
             {
                 var agent = new AgentInfo();
-                folder.AddAgent(agent);
+                _folder.AddAgent(agent);
             }
 
-            var agentsCount = folder.GetAgents().Count;
+            var agentsCount = _folder.GetAgents().Count;
 
             Assert.Equal(count, agentsCount);
         }

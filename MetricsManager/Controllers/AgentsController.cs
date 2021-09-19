@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MetricsManager.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("agents")]
     [ApiController]
     public class AgentsController : ControllerBase
     {

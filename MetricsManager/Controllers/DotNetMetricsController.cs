@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MetricsManager.Controllers
 {
-    [Route("api/metrics/dotnet")]
+    [Route("metrics/dotnet")]
     [ApiController]
     public class DotNetMetricsController : ControllerBase
     {
@@ -21,14 +21,14 @@ namespace MetricsManager.Controllers
         }
 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] DateTime fromTime, [FromRoute] DateTime toTime)
         {
             _logger.LogInformation("Request received DotNet: " + agentId + ", time from " + fromTime + " to " + toTime);
             return Ok();
         }
 
         [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        public IActionResult GetMetricsFromAllCluster([FromRoute] DateTime fromTime, [FromRoute] DateTime toTime)
         {
             _logger.LogInformation("Request received DotNet: time from " + fromTime + " to " + toTime);
             return Ok();

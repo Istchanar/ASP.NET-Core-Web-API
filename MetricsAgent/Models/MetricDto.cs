@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsAgent.Requests
+namespace MetricsAgent.Models
 {
-    public class CpuMetricCreateRequest
+    public class MetricDto
     {
-        public string Time { get; set; }
+        public DateTime Time { get; set; }
         public int Value { get; set; }
-
+        public int Id { get; set; }
     }
 }

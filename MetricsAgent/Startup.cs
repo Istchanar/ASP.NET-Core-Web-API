@@ -32,6 +32,10 @@ namespace MetricsAgent
             services.AddControllers();
             ConfigureSqlLiteConnection(services);
             services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
+            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
+            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
+            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
+            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
 
             services.AddSwaggerGen(c =>
             {
@@ -51,16 +55,29 @@ namespace MetricsAgent
         {
             using (var command = new SQLiteCommand(connection))
             {
-                // задаем новый текст команды для выполнения
-                // удаляем таблицу с метриками если она существует в базе данных
-                command.CommandText = "DROP TABLE IF EXISTS cpumetrics";
-                // отправляем запрос в базу данных
-                command.ExecuteNonQuery();
+                string[] tablesName = new string[] 
+                { 
+                    "cpumetrics",
+                    "dotnetmetrics",
+                    "hddmetrics",
+                    "networkmetrics",
+                    "rammetrics"
+                };
 
+                foreach (string tableName in tablesName) 
+                {
+                    command.CommandText = $"DROP TABLE IF EXISTS {tableName};";
+                    command.ExecuteNonQuery();
 
-                command.CommandText = @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY,
-                    value INT, time INT)";
-                command.ExecuteNonQuery();
+                    command.CommandText = $"CREATE TABLE {tableName}(id INTEGER PRIMARY KEY, value INT, time TEXT);";
+                    command.ExecuteNonQuery();
+
+                    for (int i = 0; i < 7; i++)
+                    {
+                        command.CommandText = $"INSERT INTO {tableName}(value, time) VALUES({i}, '201{i}-03-20 09:1{i}:28.27{i}Z');";
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
         }
 
