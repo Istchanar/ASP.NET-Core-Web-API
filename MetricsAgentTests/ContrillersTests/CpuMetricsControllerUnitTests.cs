@@ -1,6 +1,8 @@
+using AutoMapper;
 using MetricsAgent.Controllers;
-using MetricsAgent.DAL;
-using MetricsAgent.Models;
+using MetricsAgent.DAL.Interfaces;
+using MetricsAgent.DAL.Models;
+using MetricsAgent.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -15,15 +17,18 @@ namespace ContrillersTests.MetricsAgentTests
 
         private CpuMetricsController _controller;
         private Mock<ICpuMetricsRepository> _mockRepository;
+        private Mock<IMapper> _mockMapper;
         private Mock<ILogger<CpuMetricsController>> _mockLogger;
 
         public CpuMetricsControllerUnitTests()
         {
             _mockRepository = new Mock<ICpuMetricsRepository>();
 
+            _mockMapper = new Mock<IMapper>();
+
             _mockLogger = new Mock<ILogger<CpuMetricsController>>();
 
-            _controller = new CpuMetricsController(_mockRepository.Object, _mockLogger.Object);
+            _controller = new CpuMetricsController(_mockRepository.Object, _mockMapper.Object, _mockLogger.Object);
         }
 
 
@@ -31,11 +36,11 @@ namespace ContrillersTests.MetricsAgentTests
         [Fact]
         public void MetricCreate_ShouldCall_Create_From_Repository()
         {
-            _mockRepository.Setup(repository => repository.Create(It.IsAny<MetricDto>())).Verifiable();
+            _mockRepository.Setup(repository => repository.Create(It.IsAny<BaseMetricModel>())).Verifiable();
 
             var result = _controller.MetricCreate(new MetricCreateRequest { Time = new DateTime(2022, 5, 1, 8, 30, 52), Value = 50 });
 
-            _mockRepository.Verify(repository => repository.Create(It.IsAny<MetricDto>()), Times.AtMostOnce());
+            _mockRepository.Verify(repository => repository.Create(It.IsAny<BaseMetricModel>()), Times.AtMostOnce());
         }
 
 
@@ -55,7 +60,7 @@ namespace ContrillersTests.MetricsAgentTests
         [Fact]
         public void MetricsGetAll_ShouldCall_GetAllMetrics_From_Repository()
         {
-            _mockRepository.Setup(repository => repository.GetAllMetrics()).Returns(It.IsAny<IList<MetricDto>>());
+            _mockRepository.Setup(repository => repository.GetAllMetrics()).Returns(It.IsAny<IList<BaseMetricModel>>());
 
             var result = _controller.MetricsGetAll();
 

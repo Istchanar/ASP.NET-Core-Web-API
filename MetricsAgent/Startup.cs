@@ -1,4 +1,5 @@
-using MetricsAgent.DAL;
+using MetricsAgent.DAL.Interfaces;
+using MetricsAgent.DAL.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data.SQLite;
+using AutoMapper;
+using MetricsAgent.Mapper;
 
 namespace MetricsAgent
 {
@@ -31,6 +34,9 @@ namespace MetricsAgent
 
             services.AddControllers();
             ConfigureSqlLiteConnection(services);
+            var mapperConfiguration = new MapperConfiguration(map => map.AddProfile(new MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
             services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
             services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
             services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();

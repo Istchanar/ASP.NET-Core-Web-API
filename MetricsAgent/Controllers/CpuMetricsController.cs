@@ -5,9 +5,12 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
-using MetricsAgent.DAL;
+using MetricsAgent.DAL.Interfaces;
+using MetricsAgent.DAL.Models;
+using MetricsAgent.Requests;
+using MetricsAgent.Responses;
 using Microsoft.Extensions.Logging;
-using MetricsAgent.Models;
+using AutoMapper;
 
 namespace MetricsAgent.Controllers
 {
@@ -17,11 +20,14 @@ namespace MetricsAgent.Controllers
     {
         private readonly ICpuMetricsRepository _repository;
 
+        private readonly IMapper _mapper;
+
         private readonly ILogger<CpuMetricsController> _logger;
 
-        public CpuMetricsController(ICpuMetricsRepository repository, ILogger<CpuMetricsController> logger)
+        public CpuMetricsController(ICpuMetricsRepository repository, IMapper mapper, ILogger<CpuMetricsController> logger)
         {
             _repository = repository;
+            _mapper = mapper;
             _logger = logger;
             _logger.LogDebug(1, "Agent CpuMetricsController activated.");
         }
@@ -29,7 +35,7 @@ namespace MetricsAgent.Controllers
         [HttpPost("create")]
         public IActionResult MetricCreate([FromBody] MetricCreateRequest request)
         {
-            _repository.Create(new MetricDto
+            _repository.Create(new BaseMetricModel
             {
                 Time =  request.Time,
                 Value = request.Value
@@ -42,24 +48,59 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult MetricsGetAll()
         {
+            //IList<BaseMetricModel> metrics = _repository.GetAllMetrics();
+
             var response = new MetricCreateResponse()
             {
-                Metrics = (List<MetricDto>)_repository.GetAllMetrics()
+                Metrics = new List<MetricDto>()
             };
+
+            try
+            {
+                IList<BaseMetricModel> metrics = _repository.GetAllMetrics();
+
+                foreach (var metric in metrics)
+                {
+                    response.Metrics.Add(_mapper.Map<MetricDto>(metric));
+                }
+            }
+            catch(Exception error) 
+            {
+                _logger.LogInformation(error.ToString());
+            }
+
             var observation = response.GetObservations();
 
             _logger.LogInformation($"CPU MetricGetAll request successful. {observation} observations total.");
+
             return Ok(response);
+
         }
 
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult MetricsGetInRange([FromRoute] DateTime fromTime, [FromRoute] DateTime toTime)
         {
+
             var response = new MetricCreateResponse()
             {
-                Metrics = (List<MetricDto>)_repository.GetInRangeMetrics(fromTime, toTime)
+                Metrics = new List<MetricDto>()
             };
+
+            try
+            {
+                IList<BaseMetricModel> metrics = _repository.GetInRangeMetrics(fromTime, toTime);
+
+                foreach (var metric in metrics)
+                {
+                    response.Metrics.Add(_mapper.Map<MetricDto>(metric));
+                }
+            }
+            catch (Exception error)
+            {
+                _logger.LogInformation(error.ToString());
+            }
+
             var observation = response.GetObservations();
 
             _logger.LogInformation($"CPU MetricsGetInRange request successful. {observation} observations total from {fromTime} to {toTime}.");
